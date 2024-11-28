@@ -1,0 +1,643 @@
+\documentclass[a4paper,11pt]{article}
+%\documentclass[a4paper,draft]{article}
+%\documentclass[a4paper]{article}
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{charter} % nova fonte
+\usepackage{indentfirst} % indenta o 1o parágrafo
+\usepackage{minted}
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage{tikz}
+\usetikzlibrary{matrix}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{algpseudocode}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=red,
+    filecolor=magenta,      
+    urlcolor=red,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
+\usepackage{amsmath}
+\everymath{\displaystyle}
+\setlength{\multicolsep}{4.0pt plus 2.0pt minus 1.5pt}% 50% of original values
+
+% unidade usada para desenhar as figuras
+\setlength{\unitlength}{1cm}
+%\linethickness{1.5pt}
+
+\newcommand{\remove}[1]{}%{#1}
+\newtheorem{teorema}{Teorema}
+\newenvironment{proof}[1][Prova]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+% formatar margens quando utilizar 2 colunas
+%\addtolength{\evensidemargin}{-1.5cm}\addtolength{\oddsidemargin}{-1.5cm}\addtolength{\textwidth}{2.7cm}
+\addtolength{\evensidemargin}{-2cm}\addtolength{\oddsidemargin}{-2cm}\addtolength{\textwidth}{3.7cm}
+
+\addtolength{\topmargin}{-4.0cm}
+\addtolength{\textheight}{7.0cm}
+
+%\setlength{\parskip}{\baselineskip} % aumenta espaço entre parágrafos
+\setlength{\parskip}{0em}
+
+\hyphenpenalty=100000
+% convert probs_np_completos.gif probs_np_completos.eps
+% ps2pdf -sPAPERSIZE=a4 np.ps
+
+\begin{document}
+\title{CK0226 - Programação \\
+Professor Wladimir A. Tavares\\
+Programação em C}
+\date{}
+\maketitle
+%\tableofcontents
+
+%\tiny
+%\scriptsize
+%\footnotesize
+%\small
+\normalsize
+%\large
+%\Large
+%\LARGE
+%\huge
+%\Huge
+
+\noindent
+
+O objetivo da aula é aprender:
+
+\begin{enumerate}
+    \item Noções básica de comparações de algoritmo (Encontrar o Maior Elemento)
+    \item a usar o comando while e if/else (busca Linear), (Jump Search passo 2) e  (Jump Search passo $\sqrt{n}$).
+    \item Comportamento linear
+    \item Comportamento raiz quadrada.
+    \item Comportamento logarítmico.
+    \item Desenvolvimento de funções \texttt{colocar\_maior\_ultimo}.
+    \item Usar funções para resolver outros problemas (Ordena Colocando o maior por último)
+\end{enumerate}
+
+\newpage 
+
+
+% \section*{Multiplicar todos os ímpares da lista por 2}
+
+% Considere o problema de multiplicar todos os números ímpares da lista por 2.
+
+% \begin{center}
+% \begin{tikzpicture}
+%     % Labels for L and indices
+%     \node at (-7, 0) {$L$};
+%     \node at (-5.5, 1.0) {1};
+%     \node at (-4.5, 1.0) {2};
+%     \node at (-3.5, 1.0) {3};
+%     \node at (-2.5, 1.0) {4};
+%     \node at (-1.5, 1.0) {5};
+%     \node at (-0.5, 1.0) {6};
+%     \node at (0.5, 1.0) {7};
+%     \node at (1.5, 1.0) {8};
+%     \node at (2.5, 1.0) {9};
+%     \node at (3.5, 1.0) {10};
+    
+%     % Draw the boxes and numbers
+%     \matrix[matrix of nodes, nodes in empty cells, 
+%             nodes={draw, minimum size=1cm, anchor=center}] (m) at (-1,0) {
+%         17 & 10 & 42 & 15 & 9 & 30 & 6 & 25 & 16 & 20  \\
+%     };
+% \end{tikzpicture}
+% \end{center}
+
+% \begin{minted}[frame=single,
+%     obeytabs=true,
+%     tabsize=4,
+%     linenos]{C++}
+% #include <stdio.h>
+% int main(){
+% 	int i;
+% 	int L[6] = {17,10,42,15,9,30,6,25,16,20}; 
+% 	for(i = 0; i < 6; i++){
+% 		if(L[i]%2==1)
+% 			L[i] = L[i]*2;
+% 	}
+% 	imprime_lista(L, 6);
+% }
+% /*
+% [ 2 6 4 10 14 8]
+% */
+% \end{minted}
+
+% A ideia por trás do nosso algoritmo é processar cada elemento da lista, um por vez, e garantir que, ao final, toda a lista esteja composta apenas por números pares. 
+
+% A cada passo do laço, garantimos que todos os números que já vimos (isto é, todos os elementos da sublista $L[0..i-1]$) já foram modificados.
+
+% Podemos descrever essa propriedade da seguinte maneira:
+% \begin{quote}
+%     No início de cada iteração (dedo na posição) i, todos os elementos da lista $L[0..i-1]$ são pares.
+% \end{quote}
+
+
+% Quando o dedo está na posição $i$, verificamos $L[i]$: 
+% \begin{itemize}
+%     \item Se $L[i]$ já é par, não precisamos fazer nada e a propriedade continua verdadeira.
+%     \item Se $L[i]$ for ímpar, multiplicamos $L[i]$ por 2, transformando-o em par.
+% \end{itemize}
+
+% Na última iteração, temos que $i = n$ e a propriedade que estamos mantendo garante que todos os elementos da sublista $L[0..n-1]$) são pares.
+
+% O número de instruções realizadas pelo programa acima é proporcional a $n$. Logo, dizemos que o programa tem comportamento linear com relação ao tempo de execução.
+
+\section*{Encontrando o maior elemento}
+
+Quando um algoritmo é bom? Quando um algoritmo é ruim?
+
+\begin{minted}[frame=single,
+    obeytabs=true,
+    tabsize=4,
+    linenos]{C++}
+int maior_elemento1(int L[], int n){
+    for(int i = 0; i < n; i++){
+        int maior_todos = 1;
+        for(int j = 0; j < n; j++){
+            if(L[j] > L[i]){
+                maior_todos = 0;
+                break;
+            }
+        }
+        if(maior_todos == 1){
+            return L[i];
+        }
+    }
+}
+\end{minted}
+
+\begin{minted}[frame=single,
+    obeytabs=true,
+    tabsize=4,
+    linenos]{C++}
+int maior_elemento2(int L[], int n){
+    int M = L[0];
+    for(int i = 1; i < n; i++){
+        if(L[i] > M){
+            M = L[i];
+        }
+    }
+    return M;
+}
+
+\end{minted}
+
+As duas funções acima encontram o maior elemento numa lista de números. No caso acima, o algoritmo \texttt{maior\_elemento2} é melhor que \texttt{maior\_elemento1} (Por quê?). 
+
+Podemos tentar olhar para o número de comparações para tentar comparar os dois algoritmos. O algoritmo 
+\texttt{maior\_elemento2} realiza $n^2$ comparações e 
+\texttt{maior\_elemento1} realiza $n-1$ comparações.
+
+\newpage 
+
+
+
+
+% \section*{Varredura}
+
+% A ideia por trás da varredura do vetor é garantir que, no início de cada iteração $i$, o maior elemento da sublista $L[0..i]$ esteja na posição $L[i]$. Para alcançar isso, verificamos se o próximo elemento $L[i+1]$ é menor que $L[i]$. Se $L[i]$ for maior que $L[i+1]$, significa que esses dois elementos estão fora de ordem, e uma troca é necessária para "empurrar" o maior deles para a posição correta ao final da sublista $L[0..i+1]$. 
+
+% Essa verificação e troca são repetidas para cada par de elementos adjacentes, empurrando progressivamente os maiores elementos para as últimas posições da lista até que ela esteja totalmente ordenada.
+
+% \begin{minted}[frame=single,
+%     obeytabs=true,
+%     tabsize=4,
+%     linenos]{C++}
+% #include <stdio.h>
+% #define N 6
+% int L[N] = {7,9,1,2,3,5}; 
+	
+% int main(){
+% 	int i, temp;
+% 	// Garante que ao final de cada iteração, o maior elemento de L[0..i] está em L[i]
+% 	for(i=0;i<N-1;i++){
+% 		if(L[i] > L[i+1]){
+% 			temp = L[i];
+% 			L[i] = L[i+1];
+% 			L[i+1] = temp;
+% 		}
+% 	}
+	
+% 	printf("[");
+% 	for(i=0; i<N; i++){
+% 		printf(" %d", L[i]);
+% 	}
+% 	printf("]\n");	
+	
+% }
+% \end{minted}
+
+
+
+
+% \section*{Ordena varredura}
+
+% \section*{Checar se um vetor é crescente usando for}
+
+% \section*{Checar se um vetor é crescente usando while}
+
+% \section*{Inverte o vetor}
+
+% \section*{Pares no começo e ímpares no final}
+
+% \section*{Mover o maior elemento com o último sem alterar a posição dos demais}
+
+
+% \begin{minted}[frame=single,
+%     obeytabs=true,
+%     tabsize=4,
+%     linenos]{C++}
+% #include <stdio.h>
+% #include "prog.h"
+% int main(){
+% 	int L[6] = {7,9,1,2,3,5}; 
+% 	int i, posM, M, n, aux;
+% 	n = 6;
+% 	//Encontrar a posição do maior
+% 	M = L[0];
+% 	posM = 0;
+% 	for(i = 0; i < 6; i++){
+% 		if(L[i] > M){
+% 			M = L[i];
+% 			posM = i;
+% 		}
+% 	}
+	
+% 	for(i = posM; i < n-1; i++){
+% 		L[i] = L[i+1];
+% 	}
+% 	L[n-1] = M;
+% 	imprime_lista(L, n);
+% }
+% \end{minted}
+
+\newpage 
+
+\section*{Busca Linear}
+
+Nesse problema, recebemos um lista de inteiros $L$ ordenada em ordem crescente e um inteiro $k$, queremos saber se o inteiro $k$ é um elemento da lista de inteiros $L$.
+
+O algoritmo de busca linear consiste em avançar a variável $i$ em uma unidade até encontrar um elemento $L[i] \geq k$ ou $i = n$. Neste caso, podemos analisar os seguintes casos:
+
+\begin{enumerate}
+    \item $L[i] == k$, o elemento está presente na lista.
+    \item $L[i] > k$, o elemento não está presente na lista.
+    \item $i == n$, o elemento não está presente na lista.
+\end{enumerate}
+
+\begin{minted}[frame=single,
+    obeytabs=true,
+    tabsize=4,
+    linenos]{C++}
+#include <stdio.h>
+#define N 10
+int L[N] = {2,5,6,9,11,15,18,20,21,25};
+int k = 14;
+
+int main(){
+	int i;
+	i = 0;
+	while(i<N && L[i] < k) { 
+		printf("%d < %d\n", L[i], k);
+		i++;
+	}
+	
+	if(i==N) printf("nao achei\n");
+	else if(L[i]==k) printf("achei\n");
+	else printf("nao achei\n");
+	/*
+	if(i==N || L[i]>k)
+		printf("nao achei");
+	else
+		printf("achei");
+	*/
+}
+\end{minted}
+
+O programa acima realiza aproximadamente $n$ comparações. Neste caso, dizemos que o crescimento do tempo de execução tem um comportamento linear.
+
+
+\newpage 
+
+
+\section*{Jump Search passo 2}
+
+Nesse problema, recebemos um lista de inteiros $L$ ordenada em ordem crescente e um inteiro $k$, queremos saber se o inteiro $k$ é um elemento da lista de inteiros $L$.
+
+O algoritmo de busca linear consiste em avançar a variável $i$ em duas unidade até encontrar um elemento $L[i] \geq k$ ou $i \geq n n$. Neste caso, podemos analisar os seguintes casos:
+
+
+\begin{enumerate}
+    \item $i == n+1$, o último elemento foi testado e o elemento k não está presente.
+    \item $i == n$, o último elemento não foi testado.
+    \item $i < n \mbox{ and } L[i] \geq k$, precisamos testar $L[i]==k$ e $L[i-1]==k$   
+\end{enumerate}
+
+
+\begin{minted}[frame=single,
+    obeytabs=true,
+    tabsize=4,
+    linenos]{C++}
+#include <stdio.h>
+#define N 10
+int L[N] = {2,5,6,9,11,15,18,20,21,25};
+int k = 25;
+
+int main(){
+	int i;
+	i = 0;
+	while(i<N && L[i] < k) { 
+		printf("i %d : %d < %d\n", i, L[i], k);
+		i = i + 2;
+	}
+	printf("i = %d\n", i);
+	/*
+	//testou o ultimo
+	if(i == N+1)
+		printf("nao achei\n");
+	else if(i == N) { //pulou o ultimo
+		if(L[i-1] == k) printf("achei\n");
+		else printf("nao achei");
+	}else{ // i < N
+		if(L[i] == k) printf("achei");
+		else if(i > 0 && L[i-1] == k)             
+                 printf("achei\n");
+		else printf("nao achei");
+	}
+	*/
+	if(i>=N){
+		if(i-1<N && L[i-1]==k) printf("achei");
+		else printf("nao achei\n");
+	}else{
+		if(L[i]==k || (i > 0 && L[i-1] == k))
+			printf("achei\n");
+		else
+			printf("nao achei\n");
+	}
+	
+}
+\end{minted}
+
+O programa acima realiza aproximadamente $\frac{n}{2}$ comparações. Neste caso, dizemos que o crescimento do tempo de execução tem um comportamento linear.
+
+
+\newpage 
+
+\section*{Jump Search passo $\sqrt{n}$}
+
+No algoritmo Jump Search, o número de comparações realizada será aproximadamente ao número de blocos + tamanho do bloco. Podemos tentar encontrar o melhor tamanho de bloco, analisando os seguintes casos para N = 10:
+
+\begin{tabular}{lll}
+pulo & número de blocos & tamanho do bloco\\
+2    & $\frac{n}{2}$      & 2\\
+3    & $\frac{n}{3}$      & 3\\
+\end{tabular}
+
+Quando escolhemos o tamanho do pulo = $\sqrt{n}$ temos que o número de blocos e o tamanho do bloco tem quase o mesmo tamanho.
+
+\begin{minted}[frame=single,
+    obeytabs=true,
+    tabsize=4,
+    linenos]{C++}
+#include <stdio.h>
+#include <math.h>
+#define N 9
+int L[N] = {2,5,6,9,11,15,18,20,21};
+int k = 11;
+int pulo = sqrt(N);
+int main(){
+	int i;
+	i = 0;
+	while(i<N && L[i] < k) { 
+		printf("i %d : %d < %d\n", i, L[i], k);
+		i = i + pulo;
+	}
+	printf("i = %d\n", i);
+	if(i >= N){
+		i = N-1;
+		while(i >= 0 && L[i] > k) { 
+			printf("i %d : %d > %d\n", i, L[i], k);
+			i = i-1;
+		}	
+		if( i < 0 || L[i] < k) printf("nao achei\n");
+		else printf("achei");
+	}else{
+		while(i >= 0 && L[i] > k) { 
+			printf("i %d : %d > %d\n", i, L[i], k);
+			i--;
+		}
+		if( i < 0 || L[i] < k) printf("nao achei\n");
+		else printf("achei\n");
+	}	
+}
+\end{minted}
+
+Note que para encontrar o valor 20, o programa vai imprimir o seguinte relatório:
+\begin{minted}[frame=single,
+    obeytabs=true,
+    tabsize=4,
+    linenos]{C++}
+i 0 : 2 < 20
+i 3 : 9 < 20
+i 6 : 18 < 20
+i = 9
+i 8 : 21 > 20
+achei
+\end{minted}
+
+Note a variável $i$ pula até 3 blocos e sai do lista chegando ao valor $i = 9$. Neste caso, ele precisa analisar o último bloco da esquerda para direita pulando sequencialmente os números maiores que o número buscado. No caso do número 20, o laço termina com a variável $i$ apontando para o número 20.
+
+\newpage 
+
+\section*{Busca Binária}
+
+Na busca binária, precisamos jogar fora sempre a metade do problema. Quando escolhemos um elemento na posição do meio, pode acontecer três coisas:
+
+\begin{itemize}
+\item se $L[meio] == k$, então a busca pode ser interrompida.
+\item se $L[meio] > k$ então sabemos que o elemento buscado está na primeira metade ($L[inicio..meio-1]$).
+\item se $L[meio] < k$ então sabemos que o elemento buscado está na segunda metade ($L[meio+1..fim]$).
+
+\end{itemize}
+
+\begin{minted}[frame=single,
+    obeytabs=true,
+    tabsize=4,
+    linenos]{C++}
+#include <stdio.h>
+#include <math.h>
+#define N 9
+int L[N] = {2,5,6,9,11,15,18,20,21};
+int k = 20;
+int main(){
+	int inicio, fim, meio, encontrei;
+	inicio = 0;
+	fim = N-1;
+	encontrei = 0;
+	while(inicio<fim){
+		printf("L[%d...%d]\n", inicio, fim);
+		meio = (inicio+fim)/2;
+		if(L[meio] == k){
+			encontrei = 1;
+			break;
+		}else if(L[meio] > k){
+			fim = meio-1;
+		}else{
+			inicio = meio+1;
+		}
+	}	
+}
+\end{minted}
+
+\newpage 
+
+\section*{Trocar o maior elemento com o último}
+
+Podemos resolver o problema em duas etapas:
+
+\begin{enumerate}
+    \item Encontrar a posição do maior.
+    \item Trocar o maior com a última posição
+\end{enumerate}
+
+A ideia do algoritmo é utilizar a variável $M$ para guardar o maior encontrado visto até agora e $posM$ guarda a posição do maior encontrado visto até agora. Ao final do primeiro laço, encontramos o maior elemento e a sua posição. Em seguida, realizamos a troca desse elemento com o último.
+
+
+
+\begin{minted}[frame=single,
+    obeytabs=true,
+    tabsize=4,
+    linenos]{C++}
+#include <stdio.h>
+#include "prog.h"
+int main(){
+	int L[6] = {7,9,1,2,3,5}; 
+	int i, posM, M, n, aux;
+	n = 6;
+	//Encontrar a posição do maior
+	M = L[0];
+	posM = 0;
+	for(i = 0; i < 6; i++){
+		if(L[i] > M){
+			M = L[i];
+			posM = i;
+		}
+	}
+	//Trocar o maior com o último
+	aux = L[posM];
+	L[posM] = L[n-1];
+	L[n-1] = aux;
+	
+	imprime_lista(L, 6);
+}
+\end{minted}
+
+\newpage 
+
+
+\section*{Coloca\_maior\_ultimo}
+
+Imagine que queremos realizar essa tarefa muitas vezes para diferentes faixas da listas. A ideia agora é definir uma função para isso precisamos definir um nome e quais são os parâmetros de entrada para a função.
+
+\begin{minted}[frame=single,
+    obeytabs=true,
+    tabsize=4,
+    linenos]{C++}
+#include <stdio.h>
+#define N 6
+int L[6] = {7,9,1,2,3,5}; 
+
+void coloca_maior_ultimo(int L[], int n){
+	int i, M, posM, aux;
+	
+	M = L[0];
+	posM = 0;
+	for(i = 0; i < n; i++){
+		if(L[i] > M){
+			M = L[i];
+			posM = i;
+		}
+	}
+	//Trocar o maior com o último
+	aux = L[posM];
+	L[posM] = L[n-1];
+	L[n-1] = aux;
+
+}
+
+
+int main(){
+
+                           //[7,9,1,2,3,5]   
+coloca_maior_ultimo(L, 6); //[7,5,1,2,3|,9]
+coloca_maior_ultimo(L, 5); //[3,5,1,2|,7,9]
+coloca_maior_ultimo(L, 4); //[3,2,1|,5,7,9]
+coloca_maior_ultimo(L, 3); //[1,2|,3,5,7,9]
+coloca_maior_ultimo(L, 2); //[1,|2,3,5,7,9]
+ 
+		
+}
+\end{minted}
+
+O número de instruções realizadas pela função \texttt{colocar\_maior\_ultimo} é proporcional a $n$. Logo, dizemos que a função tem comportamento linear com relação ao tempo de execução.
+
+
+\newpage
+
+\section*{ Ordena colocando o maior por último}
+
+A ideia do método de ordenação de colocar o maior na última posição consiste em cada passo do laço, o maior é colocado na última posição do vetor de tamanho i. O problema pode ser reduzido em 1 unidade. Note que o processo continua até que o vetor fique o com o tamanho igual a 1. 
+
+\begin{minted}[frame=single,
+    obeytabs=true,
+    tabsize=4,
+    linenos]{C++}
+#include <stdio.h>
+#define N 6
+int L[6] = {7,9,1,2,3,5}; 
+
+void coloca_maior_ultimo(int L[], int n){
+	int i, M, posM, aux;
+	
+	M = L[0];
+	posM = 0;
+	for(i = 0; i < n; i++){
+		if(L[i] > M){
+			M = L[i];
+			posM = i;
+		}
+	}
+	//Trocar o maior com o último
+	aux = L[posM];
+	L[posM] = L[n-1];
+	L[n-1] = aux;
+
+}
+
+
+int main(){
+
+    int i;
+    for(i = N; i > 1; i++){
+        coloca_maior_ultimo(L, i);
+    }
+		
+}
+\end{minted}
+
+O número de instruções realizadas pelo programa acima é proporcional a $n^2$. Logo, dizemos que o programa tem comportamento quadrático com relação ao tempo de execução.
+
+\end{document}	

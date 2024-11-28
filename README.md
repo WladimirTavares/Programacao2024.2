@@ -12,8 +12,8 @@ pilhas e árvores.
 
 | Aula  | Conteúdo | Material |
 |-------|----------|----------|
-|  1    | Primeiros Passos em C         |  [pdf](aulas/aula1__Primeiros_Passos.pdf)        |
-|  2    | Problema da Busca             |  [pdf](aulas/aula2__Busca%20em%20vetores.pdf)        |
+|  1    | Primeiros Passos em C         |  [[pdf]](aulas/aula1__Primeiros_Passos.pdf) [[markdown]](aulas/aula1/aula1.md)       |
+|  2    | Problema da Busca             |  [[pdf]](aulas/aula2__Busca%20em%20vetores.pdf) [[markdown]](aulas/aula2/aula2.md)         |
 |  3    | Problema da Ordenação         |  [pdf](aulas/aula3___Ordenando_listas.pdf)        |
 |  4    | Programando com cadeia de caracteres | [pdf](aulas/aula4_Caracteres_e_cadeia_de_caracteres.pdf) |
 |  5    | Atividade Prática             | [[pdf]](pratica1/Atividade_Prática.pdf) [[arquivo fonte]](pratica1/main.c)     
