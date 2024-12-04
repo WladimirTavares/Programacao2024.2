@@ -21,4 +21,4 @@ pilhas e árvores.
 |  5    | Atividade Prática             | [[pdf]](pratica2/Atividade_Prática.pdf) [[arquivo fonte]](pratica2/main.c)     
 |  7    | Programando com recursão padrões | [pdf](aulas/aula6___Programando_com_recursão_com_padrões.pdf) |
 |  8    | Programando com recursão números | [pdf](aulas/aula7_programando_com_recursão_números.pdf) |  
-
+| 9     | Programando com recursão com vetores, busca e ordenação | [pdf](aulas/aula8_programando_recursao_vetores.pdf) |
