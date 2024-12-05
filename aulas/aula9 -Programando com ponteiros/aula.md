@@ -356,60 +356,63 @@ int main(){
 #include <string.h>
 
 typedef struct ListaDinamica{
-    int * v;
-    int tamanhoAtual;
-    int tamanhoMaximo;
+	int * v;
+	int tamanho_atual;
+	int tamanho_maximo;
 } ListaDinamica;
 
-
-ListaDinamica * create_lista(){
-    ListaDinamica * L;
-    L = malloc(sizeof(ListaDinamica));
-    L->tamanhoAtual = 0;
-    L->tamanhoMaximo = 2;
-    L->v = (int *)malloc(L->tamanhoMaximo*sizeof(int));
-	return L;
+ListaDinamica * create_lista( ){
+	ListaDinamica * l = (ListaDinamica *)malloc(sizeof(ListaDinamica));
+	l->tamanho_maximo = 1;
+	l->tamanho_atual = 0;
+	l->v = (int *)malloc(l->tamanho_maximo*sizeof(int));
+	return l;
 }
 
-void push_back(ListaDinamica * L, int valor){
-    if(L->tamanhoAtual < L->tamanhoMaximo ){
-        L->v[L->tamanhoAtual] = valor;
-        L->tamanhoAtual++;
-    }else{
-        int * v2 = (int *)malloc(2*L->tamanhoAtual*sizeof(int));
-        for(int i = 0; i < L->tamanhoAtual; i++){
-			v2[i] = L->v[i];
+void add(ListaDinamica * l, int valor){
+	
+	
+	if(l->tamanho_atual < l->tamanho_maximo){
+		l->v[l->tamanho_atual] = valor;
+		l->tamanho_atual++;
+	}else{
+		int * p;
+		p = (int *)malloc(2*l->tamanho_maximo*sizeof(int));
+		
+		for(int i = 0; i < l->tamanho_maximo; i++){
+			p[i] = l->v[i];
 		}
-        
-        free(L->v);
-        L->v = v2;
-        L->tamanhoMaximo = 2*L->tamanhoAtual;
-        push_back(L, valor);
-    }
-}
-
-void pop_back(ListaDinamica * L){
-	if(L->tamanhoAtual > 0){
-		L->tamanhoAtual--;
+		free(l->v);
+		l->v = p;
+		l->tamanho_maximo = 2*l->tamanho_maximo;
+		add(l, valor);
 	}
 }
 
-void mostra(ListaDinamica * L){
-    printf("[");
-    for(int i = 0; i < L->tamanhoAtual; i++)
-        printf("%d ", L->v[i]);
-    printf("]\n");
+void mostra_lista(ListaDinamica * l){
+	printf("[");
+	for(int i = 0; i < l->tamanho_atual; i++){
+		printf("%d ", l->v[i]);
+	}
+	printf("]\n");
 }
 
 int main(){
-    ListaDinamica * L; 
-    L = create_lista();
-    for(int i = 0; i < 16; i++){
-		push_back(L, i);
-		mostra(L);
-		printf("%p\n", L->v);
-	} 
+	ListaDinamica* l;
+	l = create_lista();
+	mostra_lista(l);
+	for(int i = 0; i < 20; i++){
+		add(l, i);
+		mostra_lista(l);
+		
+		printf("%p\n", &l->v[0]);
+	}
+	
+	//for(int i = 0; i < 10; i++){
+	//	add(l, i);
+	//}
 }
+
 
 ```
 
