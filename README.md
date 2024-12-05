@@ -21,7 +21,7 @@ pilhas e árvores.
 |  6    | Programando com recursão padrões | [pdf](aulas/aula6___Programando_com_recursão_com_padrões.pdf) |
 |  7    | Programando com recursão números | [pdf](aulas/aula7_programando_com_recursão_números.pdf) |  
 |  8    | Programando com recursão com vetores, busca e ordenação | [pdf](aulas/aula8_programando_recursao_vetores.pdf) |
-
+|  9    | Programando com ponteiros | [[markdown]](aulas/aula9%20-Programando%20com%20ponteiros/aula.md)
 
 ## Atividades Prática
 
@@ -30,3 +30,7 @@ pilhas e árvores.
 |  1    | Vetores e cadeia de caracteres             | [[pdf]](pratica1/Atividade_Prática.pdf) [[arquivo fonte]](pratica1/main.c)   |
 |  2    | Registro BigInt             | [[pdf]](pratica2/Atividade_Prática.pdf) [[arquivo fonte]](pratica2/main.c)     
 |  3    | Recursão  | [[pdf]](pratica3/Atividade_Prática___Recursão.pdf) [[arquivo fonte]](pratica3/main.c) |
+
+## Lista de Exercícios
+
+1. [Lista de Exercícios](Lista1.pdf)
